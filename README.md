@@ -19,22 +19,22 @@ This benchmark can be replicated using the machine configuration recommended in 
 
 The cluster setup and configuration parameters used for the products are:
 
-<p align="center"><img width="80%" height="80%" src="images/cluster_setup.png" align="middle"> </br>*Cluster setup details*</p>
+<p align="center"><img width="80%" height="80%" src="images/cluster_setup.png" align="middle"> </br>Cluster setup details</p>
 
 ###  Product Runtime Architecture
 The runtime architecture is depicted in the following figures. Essentially, it consists a logical overview of the components and the configuration used for setting up the cluster.
 
-<p align="center"><img width="60%" height="60%" src="images/alluxio_runtime_architecture.png" align="middle"> </br>*Alluxio's runtime architecture*</p>
+<p align="center"><img width="60%" height="60%" src="images/alluxio_runtime_architecture.png" align="middle"> </br>Alluxio's runtime architecture</p>
 
-<p align="center"><img width="60%" height="60%" src="images/cassandra_runtime_architecture.png" align="middle"> </br>*Cassandra's runtime architecture*</p>
+<p align="center"><img width="60%" height="60%" src="images/cassandra_runtime_architecture.png" align="middle"> </br>Cassandra's runtime architecture</p>
 
-<p align="center"><img width="80%" height="80%" src="images/kudu_runtime_architecture.png" align="middle"> </br>*Kudu's runtime architecture*</p>
+<p align="center"><img width="80%" height="80%" src="images/kudu_runtime_architecture.png" align="middle"> </br>Kudu's runtime architecture</p>
 
-<p align="center"><img width="60%" height="60%" src="images/spark_runtime_architecture.png" align="middle"> </br>*Spark's runtime architecture*</p>
+<p align="center"><img width="60%" height="60%" src="images/spark_runtime_architecture.png" align="middle"> </br>Spark's runtime architecture</p>
 
-<p align="center"><img width="70%" height="70%" src="images/embed_runtime_architecture.png" align="middle"> </br>*SnappyData Embedded Mode's runtime architecture*</p>
+<p align="center"><img width="70%" height="70%" src="images/embed_runtime_architecture.png" align="middle"> </br>SnappyData Embedded Mode's runtime architecture</p>
 
-<p align="center"><img width="70%" height="70%" src="images/smart_runtime_architecture.png" align="middle"> </br>*SnappyData Smart Connector Mode's runtime architecture*</p>
+<p align="center"><img width="70%" height="70%" src="images/smart_runtime_architecture.png" align="middle"> </br>SnappyData Smart Connector Mode's runtime architecture</p>
 
 <a id="launch_run"></a>
 ## Launching Cluster and Running the Benchmark
