@@ -1,4 +1,4 @@
-# Benchmark
+# Benchmarking Apache Spark with Cassandra, Kudu, Alluxio, Spark cache and SnappyData
 
 ## Run This Benchmark Yourself
 
@@ -9,7 +9,7 @@ This benchmark can be replicated using the machine configuration recommended in 
 
 **The Airline** data set consists of flight arrival and departure details for all commercial flights from 1987 to 2017. In this benchmark, only specific data fields have been used in the queries. It is recommended that you [download the following data fields](https://www.transtats.bts.gov/DL_SelectFields.asp?Table_ID=236&DB_Short_Name=On-Time) for the years 1995-2015:
 
-![DataFields](images/airline_datafield.png)
+<p align="center"><img width="60%" height="60%" src="images/airline_datafield.png" align="middle"> </br></p>
 
 **The Airline Reference table** data set consists of code (UniqueCarrier) and description fields and can be found [here](https://github.com/SnappyDataInc/snappydata/tree/master/examples/quickstart/data/airportcodeParquetData).
 
@@ -88,3 +88,32 @@ We have used a single machine with the following configuration for this benchmar
 | Operating System | Configuration |
 |--------|--------|
 |Ubuntu 16.04.1 LTS|GNU/Linux 4.4.0-98-generic x86_64 </p>Azure VM with:</p>- 16 Cores</p>- 112 GB RAM|
+
+## Summary of our Key Findings
+
+- While Spark’s built-in in-memory caching is convenient, it is not the fastest. What you might find interesting is that Spark’s parquet storage is faster than its in-process caching performance. It is not just about managing state in-memory. The structure, the optimizations in the engine are much more paramount. 
+- [SnappyData’s embedded mode](https://snappydatainc.github.io/snappydata/affinity_modes/embedded_mode/) (Store embedded within Spark execution engine) is faster than the other compared products, as described below:
+	- For **analytical queries**, it is faster than Spark by *6X - 15X* times, Alluxio by *3X - 6X* times, Kudu by *80X - 120X* times  and Cassandra by *400X - 1800X* times.
+	- For **load performance**, it is faster than Alluxio by *2X* times, Kudu by *8X* times and Cassandra by *60X* times.
+	- For **point query performance**, it is faster than Spark by *30X - 60X* times, Alluxio by *15X - 30X* times, Kudu by *10X - 30X* times and Cassandra by *3000X - 9000X* times. 
+	- For **update performance**, it is faster than Kudu by *10X - 30X* times, and Cassandra by *3000X - 9000X* times.
+- SnappyData in embedded mode avoids unnecessary copying of data from external processes and optimizes Spark’s catalyst engine in a number of ways (refer to the blog for more details on how SnappyData achieves this performance gain). 
+- [SnappyData’s Smart connector mode](https://snappydatainc.github.io/snappydata/affinity_modes/connector_mode/#snappydata-smart-connector-mode) (Store cluster is isolated from Spark cluster) is also much faster than other compared products, as described below: 
+	- For **analytical queries**, it is faster than Spark by *3X - 6X* times, Alluxio by *2X - 3X* times, Kudu by *20X - 65X* times and Cassandra by *200X - 700X* times. 
+	- For **load performance**, it is faster than Alluxio by *2X* times, Kudu by *8X* times and Cassandra by *60X* times. 
+	- For  **point query performance**, it is faster than Spark by *2X - 3X* times, Cassandra by *150X - 300X* times. 
+	It has been noted that Alluxio’s performance is approximately the same as SnappyData and Kudu’s performance is better than SnappyData in the Smart Connector mode.
+	- For update performance, it is faster than Kudu by *6X - 8X* times, and Cassandra by *250X - 300X* times.
+- We observed Alluxio to easily beat all the other store options (except SnappyData). We think this is primarily attributed to its block-oriented storage layer and seems to have also been tuned to work with Spark more natively.  But at the same time, it does not support data mutation, which other stores do.
+- Cassandra, while likely being the most popular storage option with Spark, was the slowest. This is primarily attributed to how Cassandra internally manages rows. It is a row-oriented database and lacks all the optimizations commonly seen in columnar databases. Analytical queries tend to scan all rows and this results in  over pointer chasing - which is very expensive in modern-day multi-core architectures. Moreover, the data format differences result in high serialization and deserialization overhead.
+
+The following charts display the performance results based on which, the key findings were derived.
+<table BORDER="0" WIDTH="100%" CELLPADDING="0" CELLSPACING="0" align="center" bgcolor="#ccccff">
+  <tr> <th colspan="2"><p align="center"><img width="50%" height="50%" src="images/load_performance.png" align="middle"> </br>Load Performance</p></th>
+ </tr>
+ <tr> <th> <img width="50%" height="50%" src="images/analytical_spark_alluxio.png" align="middle"><img width="50%" height="50%" src="images/analytical_kudu_cassandra.png" align="middle"> </br>Analytical Performance
+ </th></tr>  
+ <tr> <th> <p><img width="50%" height="50%" src="images/point_lookup_spark_alluxio.png" align="middle"><img width="50%" height="50%" src="images/point_lookup_kudu_cassandra.png" align="middle"> </br>Point Lookup Performance</p></th> </tr>
+ <tr> <th colspan="2"><img width="50%" height="50%" src="images/update_performance.png" align="middle"> </br>Update Performance
+</th> </tr>
+</table>  
